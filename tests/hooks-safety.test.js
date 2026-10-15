@@ -33,15 +33,13 @@ const assertDeny = (stdout, message) => {
   )
 }
 
+// Allowed path prints nothing: an explicit "allow" without hookEventName fails Claude Code
+// validation, and with it would auto-approve commands past the user's permission rules.
 const assertAllow = (stdout, message) => {
-  const parsed = parseOutput(stdout)
-  assert.ok(parsed, `${message}: stdout should not be empty`)
-  const decision =
-    parsed.permissionDecision || parsed.hookSpecificOutput?.permissionDecision
   assert.equal(
-    decision,
-    "allow",
-    `${message}: expected permissionDecision=allow but got: ${stdout}`
+    parseOutput(stdout),
+    null,
+    `${message}: expected no output (defer to permission rules) but got: ${stdout}`
   )
 }
 

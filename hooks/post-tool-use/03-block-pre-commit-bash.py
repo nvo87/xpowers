@@ -86,7 +86,6 @@ def emit_deny(reason):
 
 def emit_allow():
     """Emit a JSON allow decision and exit."""
-    print(json.dumps({"hookSpecificOutput": {"permissionDecision": "allow"}}))
     sys.exit(0)
 
 
