@@ -73,7 +73,7 @@ function asReviewers(value, where, agents) {
 function resolve(stage, configPath) {
   const all = [...SKILL_STAGES, ...REVIEW_STAGES, "finish"]
   if (!all.includes(stage)) throw new Error(`Unknown stage "${stage}". Expected one of: ${all.join(", ")}`)
-  if (!configPath) return stage === "finish" ? { configured: false, stage, mode: "keep-branch" } : { configured: false, stage }
+  if (!configPath) return stage === "finish" ? { configured: false, stage, mode: "keep-branch", skills: [] } : { configured: false, stage }
 
   const config = JSON.parse(fs.readFileSync(configPath, "utf8"))
   const profileName = config.profile
@@ -90,9 +90,10 @@ function resolve(stage, configPath) {
     const reviewers = asReviewers(profile[stage], where, builtinAgents())
     return reviewers ? { ...base, reviewers } : { configured: false, config: configPath, profile: profileName, stage }
   }
-  const mode = (profile.finish && profile.finish.mode) || "keep-branch"
+  const finish = profile.finish || {}
+  const mode = finish.mode || "keep-branch"
   if (!FINISH_MODES.includes(mode)) throw new Error(`${where}.mode must be one of: ${FINISH_MODES.join(", ")}`)
-  return { ...base, mode }
+  return { ...base, mode, skills: asSkillList(finish.skills || [], `${where}.skills`) }
 }
 
 function option(args, name) {

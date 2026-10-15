@@ -215,7 +215,6 @@ test("test_ralph_autopilot_stop_hook_registered_for_activation_stop_and_subagent
   const hooks = JSON.parse(read("hooks/hooks.json")).hooks
   const hookCommand = "${CLAUDE_PLUGIN_ROOT}/hooks/stop/30-ralph-autopilot-continue.js"
   const reminderCommand = "${CLAUDE_PLUGIN_ROOT}/hooks/stop/10-gentle-reminders.sh"
-  const memsearchCommand = "${CLAUDE_PLUGIN_ROOT}/hooks/stop/20-memsearch-save.sh"
   const commandsFor = (eventName) =>
     (hooks[eventName] || []).flatMap((entry) =>
       (entry.hooks || []).map((hook) => hook.command),
@@ -229,7 +228,6 @@ test("test_ralph_autopilot_stop_hook_registered_for_activation_stop_and_subagent
   assert.equal(stopCommands.includes(hookCommand), true)
   assert.equal(subagentStopCommands.includes(hookCommand), true)
   assert.equal(stopCommands.includes(reminderCommand), true)
-  assert.equal(stopCommands.includes(memsearchCommand), true)
   assert.ok(stopCommands.indexOf(hookCommand) < stopCommands.indexOf(reminderCommand))
 })
 

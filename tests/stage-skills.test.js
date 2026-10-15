@@ -79,3 +79,14 @@ test("unknown profile is an error", () => {
   const { code } = resolve(project({ profile: "zzz", profiles: {} }), "implement")
   assert.equal(code, 2)
 })
+
+test("finish returns configured skills alongside the mode", () => {
+  const config = { profile: "a", profiles: { a: { finish: { mode: "merge-local", skills: ["sdlc-memory-save-epic-wisdom"] } } } }
+  const { out } = resolve(project(config), "finish")
+  assert.equal(out.mode, "merge-local")
+  assert.deepEqual(out.skills, ["sdlc-memory-save-epic-wisdom"])
+})
+
+test("finish without config has no skills", () => {
+  assert.deepEqual(resolve(project(null), "finish").out.skills, [])
+})

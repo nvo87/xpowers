@@ -25,7 +25,7 @@ Run `resolve` from the project directory; it walks up to the nearest `.claude/xp
 | `task-review` | execute-ralph-cc Phase 3 quick review | `reviewers` |
 | `final-review` | execute-ralph-cc Phase 4 specialized reviews | `reviewers` |
 | `final-gate` | execute-ralph-cc Phase 4 final gate | `reviewers` |
-| `finish` | finishing-a-development-branch | `mode`: `keep-branch` (default) or `merge-local`; pushing is never allowed |
+| `finish` | finishing-a-development-branch | `mode`: `keep-branch` (default) or `merge-local`; pushing is never allowed. `skills`: run after the epic is closed (e.g. saving epic lessons) |
 
 ## Rules
 
@@ -81,7 +81,7 @@ Reviewers additionally get `<review_focus><focus></review_focus>` when `focus` i
         { "name": "spec", "agent": "review-implementation" },
         { "name": "architecture", "agent": "autonomous-reviewer", "skills": ["fans-django-review"] }
       ],
-      "finish": { "mode": "keep-branch" }
+      "finish": { "mode": "keep-branch", "skills": [] }
     }
   }
 }

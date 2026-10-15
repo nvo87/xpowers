@@ -68,6 +68,10 @@ tm close bd-1
 
 ---
 
+**Stage skills (`finish`):** follow the Stage Skills Protocol (`cat "$(ls -d ~/.claude/plugins/cache/*/xpowers/*/ | tail -1)skills/common-patterns/stage-skills.md"`). Run `resolve finish`; invoke every skill in `skills` with the Skill tool now, after the epic is closed, and follow it. An empty list means nothing to do.
+
+---
+
 ## Step 2: Verify Tests
 
 **IMPORTANT:** Use xpowers:test-runner agent to avoid context pollution.
