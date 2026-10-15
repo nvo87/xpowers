@@ -354,3 +354,7 @@ If tests hang, note that you're still waiting after reasonable time.
 **DO NOT truncate or summarize failures.** The user needs complete information to debug and fix issues.
 
 Your goal is to provide clean, actionable results without polluting the requestor's context with successful output or verbose formatting changes, while ensuring complete failure details for effective debugging.
+
+## Stage Skills
+
+If your prompt contains a `<stage_skills>` block, invoke every listed skill with the Skill tool before any other work, apply their rules for the whole task, and end your output with `Stage skills loaded: <names>`. If it contains `<review_focus>`, check that focus first and report findings outside it only when Critical or High.

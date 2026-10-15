@@ -44,6 +44,8 @@ Symptoms:
 
 ## 1. Identify Tasks to Expand
 
+**Stage skills (`plan`):** follow the Stage Skills Protocol (`cat "$(ls -d ~/.claude/plugins/cache/*/xpowers/*/ | tail -1)skills/common-patterns/stage-skills.md"`). Run `resolve plan`; if configured, invoke every listed skill with the Skill tool now, announce them, and write every task step so it complies with them; name the relevant skills in each task design so the implementer sees them. If not configured, continue as usual.
+
 **User specifies scope:**
 - Single: "Expand bd-2"
 - Range: "Expand bd-2 through bd-5"

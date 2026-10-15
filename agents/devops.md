@@ -153,3 +153,7 @@ Recent CI: 3/5 last runs passed. Failures in workflow 'test' (run #456, #458).
 3. **Safety first**: Only run read-only diagnostic commands
 4. **Actionable**: Every finding includes a concrete suggested fix
 5. **Context-aware**: Check recent CI history to identify patterns, not just config
+
+## Stage Skills
+
+If your prompt contains a `<stage_skills>` block, invoke every listed skill with the Skill tool before any other work, apply their rules for the whole task, and end your output with `Stage skills loaded: <names>`. If it contains `<review_focus>`, check that focus first and report findings outside it only when Critical or High.

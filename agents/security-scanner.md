@@ -149,3 +149,7 @@ Command that would have been run: [exact requested command, or the command you i
 3. **Read-only**: You scan and report. You never modify code.
 4. **Graceful degradation**: If WebFetch fails for CVE checks, note it and continue
 5. **Scope clarity**: Always report how many files were scanned
+
+## Stage Skills
+
+If your prompt contains a `<stage_skills>` block, invoke every listed skill with the Skill tool before any other work, apply their rules for the whole task, and end your output with `Stage skills loaded: <names>`. If it contains `<review_focus>`, check that focus first and report findings outside it only when Critical or High.

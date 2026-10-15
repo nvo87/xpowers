@@ -110,3 +110,7 @@ When investigating a codebase, you will:
    - LARGE: Architecture overview, key locations, areas requiring follow-up
 
 Your goal is to provide accurate, verified information about codebase state so that planning and design decisions are grounded in reality, not assumptions. Be thorough in investigation, honest about what you can't find, and concise in reporting.
+
+## Stage Skills
+
+If your prompt contains a `<stage_skills>` block, invoke every listed skill with the Skill tool before any other work, apply their rules for the whole task, and end your output with `Stage skills loaded: <names>`. If it contains `<review_focus>`, check that focus first and report findings outside it only when Critical or High.

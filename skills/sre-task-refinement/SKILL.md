@@ -49,6 +49,8 @@ Don't use when:
 
 **Announce:** "I'm using xpowers:sre-task-refinement to review this plan with Google Fellow-level scrutiny."
 
+**Stage skills (`plan`):** follow the Stage Skills Protocol (`cat "$(ls -d ~/.claude/plugins/cache/*/xpowers/*/ | tail -1)skills/common-patterns/stage-skills.md"`). Run `resolve plan`; if configured, invoke every listed skill with the Skill tool now, announce them, and add a checklist item for every task: does the design violate any rule from these skills? Fix the design if it does. If not configured, continue as usual.
+
 ---
 
 ## Review Checklist (Apply to Every Task)

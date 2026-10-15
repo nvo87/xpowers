@@ -61,6 +61,8 @@ Project Root: [root path]
 [Insert design from tm show task-id]
 </task_spec>
 
+[If the orchestrator resolved stage skills: insert the <stage_skills> block from the Stage Skills Protocol here. Omit otherwise.]
+
 **Mandatory Workflow (RED-GREEN-REFACTOR)**:
 1. **RED**: Use `sre-task-refinement` on the task design BEFORE implementation. Write a failing test.
 2. **GREEN**: Implement the minimal code required to pass the test. Use `test-runner` for all verifications.
@@ -68,7 +70,7 @@ Project Root: [root path]
 
 **Completion**:
 1. Run all relevant tests via `test-runner`.
-2. `git add [relevant files] && git commit -m 'Complete bd-[N]: [Task Title]'`
+2. `git add [relevant files] && git commit -m 'Complete bd-[N]: [Task Title]'` (when stage skills are configured, end the message with a blank line and `XPowers-Profile: [profile]`)
 3. `tm close bd-[N]`
 4. Provide a one-paragraph summary of implementation and verification steps.
 

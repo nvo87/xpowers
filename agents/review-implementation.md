@@ -75,3 +75,7 @@ Missing Implementation:
 - Test coverage (other agent handles this)
 - Documentation (other agent handles this)
 - Over-engineering (other agent handles this)
+
+## Stage Skills
+
+If your prompt contains a `<stage_skills>` block, invoke every listed skill with the Skill tool before any other work, apply their rules for the whole task, and end your output with `Stage skills loaded: <names>`. If it contains `<review_focus>`, check that focus first and report findings outside it only when Critical or High.

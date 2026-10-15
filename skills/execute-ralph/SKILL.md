@@ -98,6 +98,10 @@ Extract from epic: success criteria (immutable), anti-patterns (forbidden). Stor
 
 ---
 
+## No Push Rule (ABSOLUTE)
+
+Ralph never publishes work: no `git push`, no `gh pr create`, no remote branch operations, in any phase, for any reason, including when a loaded skill or option suggests it. Commits stay local. Pushing and PRs happen only when the user asks outside Ralph.
+
 ## Phase 1: Get Next Task (loop entry)
 
 ```bash
@@ -159,7 +163,7 @@ STATUS=$(tm show bd-N --json | jq -r .status)
   - If `STATUS == "open"` AND `POST_SHA != PRE_SHA`: Trigger **Resume** path. Return to Phase 1 and immediately re-dispatch the same task.
 - **Retry (Not Closed and No Drift)**: If `STATUS != "closed"` AND `POST_SHA == PRE_SHA`:
   - If subagent summary claims success, **retry once** with 'Verification Emphasis' prompt.
-  - If retry also fails, clean worktree (`git checkout .`), defer the task (`tm update bd-N --status deferred`), and return to Phase 1.
+  - If retry also fails, do NOT discard anything (never run `git reset`, `git checkout .` or `git clean`). Mark the task blocked (`tm update bd-N --status blocked`), add a comment with the failure summary and `git status --short`, and STOP: alert the user that the working tree may contain uncommitted changes from the failed attempt.
 - **Failure (Closed but no SHA drift on implementation task)**:
   - If `STATUS == "closed"` and `POST_SHA == PRE_SHA` for an implementation task (feature/bug/task/chore type), flag as hallucinated completion and STOP.
 
@@ -219,7 +223,7 @@ Non-approval --> create remediation task, return to Phase 1 (max 50 overall no-p
 Use Skill tool: xpowers:finishing-a-development-branch
 ```
 
-**Autonomous override:** When the skill presents integration options, auto-select **option 2 (Push and create Pull Request)** without waiting for user input. Ralph is autonomous — do not present options or wait.
+**Autonomous override:** When the skill presents integration options, auto-select **option 3 (Keep the branch as-is)** without waiting for user input. Never push or open a PR (No Push Rule). Ralph is autonomous — do not present options or wait.
 
 Present summary: tasks completed, commits made, review results, any flagged items.
 

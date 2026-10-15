@@ -160,3 +160,7 @@ This is critical — your value scales with available sources but you must ALWAY
 3. **Graceful degradation**: Always produce output, regardless of source availability
 4. **Context over code**: Your value is finding information that ISN'T in the code
 5. **Honest gaps**: Reporting what you couldn't find is as valuable as what you found
+
+## Stage Skills
+
+If your prompt contains a `<stage_skills>` block, invoke every listed skill with the Skill tool before any other work, apply their rules for the whole task, and end your output with `Stage skills loaded: <names>`. If it contains `<review_focus>`, check that focus first and report findings outside it only when Critical or High.

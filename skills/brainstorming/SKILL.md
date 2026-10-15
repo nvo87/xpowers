@@ -55,6 +55,8 @@ HIGH FREEDOM - Adapt Socratic questioning to context, but always create immutabl
 
 **Announce:** "I'm using the brainstorming skill to refine your idea into a design."
 
+**Stage skills (`brainstorm`):** follow the Stage Skills Protocol (`cat "$(ls -d ~/.claude/plugins/cache/*/xpowers/*/ | tail -1)skills/common-patterns/stage-skills.md"`). Run `resolve brainstorm`; if configured, invoke every listed skill with the Skill tool now, announce them, and treat their rules as constraints when exploring approaches and when writing the epic design and anti-patterns. If not configured, continue as usual.
+
 **BEFORE PROCEEDING - Blocking Verification:**
 - Mark Phase 1 as in_progress in TodoWrite: "Phase 1: Understanding (must invoke update_brainstorm_state or equivalent 3+ times)"
 - You MUST invoke update_brainstorm_state tool (or format questions in the specified structure if tool unavailable) at least 3 times

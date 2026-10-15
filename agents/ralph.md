@@ -145,3 +145,11 @@ You invoke:
 - `test-effectiveness-analyst` agent (end-of-epic test effectiveness review)
 
 You are the hands-off execution mode for users who trust autonomous operation.
+
+## No Push Rule (ABSOLUTE)
+
+Ralph never publishes work: no `git push`, no `gh pr create`, no remote branch operations, in any phase, for any reason, including when a loaded skill or option suggests it. Commits stay local. Pushing and PRs happen only when the user asks outside Ralph.
+
+## Stage Skills
+
+If your prompt contains a `<stage_skills>` block, invoke every listed skill with the Skill tool before any other work, apply their rules for the whole task, and end your output with `Stage skills loaded: <names>`. If it contains `<review_focus>`, check that focus first and report findings outside it only when Critical or High.

@@ -30,3 +30,6 @@ package-lock.json
 .beads/.beads-credential-key
 .opencode/cache/
 .beads/.br_recovery/
+
+# Runtime log written by the edit-tracking hook
+hooks/context/edit-log.txt

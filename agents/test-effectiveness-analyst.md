@@ -383,3 +383,7 @@ Target: 80%+ mutation score for critical modules
 - Rush categorization without reading production code first
 
 **Fight these temptations.** Junior engineers write plausible-looking tests. Your job is to be the skeptic who verifies they actually work.
+
+## Stage Skills
+
+If your prompt contains a `<stage_skills>` block, invoke every listed skill with the Skill tool before any other work, apply their rules for the whole task, and end your output with `Stage skills loaded: <names>`. If it contains `<review_focus>`, check that focus first and report findings outside it only when Critical or High.

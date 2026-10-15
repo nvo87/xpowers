@@ -84,3 +84,7 @@ Command that would have been run: [exact requested command, or the command you i
 - Performance unless it's a clear problem
 - Documentation gaps (review-documentation handles this)
 - Security vulnerabilities (security-scanner handles OWASP, secrets, CVEs)
+
+## Stage Skills
+
+If your prompt contains a `<stage_skills>` block, invoke every listed skill with the Skill tool before any other work, apply their rules for the whole task, and end your output with `Stage skills loaded: <names>`. If it contains `<review_focus>`, check that focus first and report findings outside it only when Critical or High.

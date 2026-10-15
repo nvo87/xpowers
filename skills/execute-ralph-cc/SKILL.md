@@ -86,6 +86,10 @@ The `prompt` parameter contains concrete Phase 0 re-entry instructions so the wa
 **CRITICAL: TUI Dashboard Updates (If Supported)**
 If the `update_ralph_state` tool is available in your environment, use it to keep the live TUI dashboard updated during this turn. If NOT available (e.g. running in Claude Code without the Pi extension), ignore this requirement.
 
+## No Push Rule (ABSOLUTE)
+
+Ralph never publishes work: no `git push`, no `gh pr create`, no remote branch operations, in any phase, for any reason, including when a loaded skill or option suggests it. Commits stay local. Pushing and PRs happen only when the user asks outside Ralph.
+
 ## Phase 0: State Recovery (every wake-up entry point)
 
 This phase runs at the start of EVERY turn. It reconstructs all context from bd/tm.
@@ -220,6 +224,7 @@ Use the **Subagent Prompt Template** from `subagent-driven-development` skill, p
 - **Immutable Epic Requirements**: from `tm show bd-EPIC` wrapped in `<epic_contract>` tags.
 - **Task Specification (bd-N)**: from `tm show bd-N` wrapped in `<task_spec>` tags.
 - **Mandatory Workflow**: Ensure `sre-task-refinement` and TDD are mandated.
+- **Stage Skills**: run `resolve implement` per the Stage Skills Protocol (`cat "$(ls -d ~/.claude/plugins/cache/*/xpowers/*/ | tail -1)skills/common-patterns/stage-skills.md"`). If configured, add the `<stage_skills>` block and require the `XPowers-Profile: <profile>` commit trailer.
 
 **After Agent returns**, verify progress:
 ```bash
@@ -245,24 +250,11 @@ STATUS=$(tm show bd-N --json | jq -r .status)
   END TURN. The next wake-up will find the task as in-progress and resume from Phase 0.
 - **Retry (Not Closed and No Drift)**: If `STATUS != "closed"` AND `POST_SHA == PRE_SHA`:
   - If subagent summary claims success, **retry once** with 'Verification Emphasis' prompt.
-  - If retry also fails, clean worktree (`git reset HEAD && git checkout . && git clean -fd`), defer the task (`tm update bd-N --status deferred`), increment watchdog counter (no-progress cycle), and call ScheduleWakeup to return to Phase 0. Do NOT proceed to Phase 3 quick review -- there is no completed task to review.
-    ```bash
-    WATCHDOG_TITLE=$(tm show bd-WATCHDOG --json | jq -r .title)
-    CYCLES=$(echo "$WATCHDOG_TITLE" | grep -o 'cycles=[0-9]*' | cut -d= -f2)
-    NEW_CYCLES=$((CYCLES + 1))
-    PHASE4=$(echo "$WATCHDOG_TITLE" | grep -o 'phase4=[0-9]*' | cut -d= -f2)
-    tm update bd-WATCHDOG --title "LOOP-WATCHDOG: bd-EPIC cycles=${NEW_CYCLES} phase4=${PHASE4}"
-    ```
-    ```text
-    ScheduleWakeup({
-      delaySeconds: 60,
-      reason: "Task bd-N deferred after retry exhaustion, returning to Phase 0 for next task",
-      prompt: "Continue execute-ralph-cc. Load the skill and start at Phase 0: run bv --robot-triage, find the active epic, read tasks and criteria from bd/tm. All state from bd/tm."
-    })
-    ```
-    END TURN. Phase 0 will select a different ready task or check epic completion.
+  - If retry also fails, do NOT discard anything (never run `git reset`, `git checkout .` or `git clean`). Mark the task blocked (`tm update bd-N --status blocked`), add a comment with the failure summary and `git status --short`, and STOP: alert the user that the working tree may contain uncommitted changes from the failed attempt. Do NOT call ScheduleWakeup.
 - **Failure (Closed but no SHA drift on implementation task)**:
   - If `STATUS == "closed"` and `POST_SHA == PRE_SHA` for an implementation task (feature/bug/task/chore type), flag as hallucinated completion and STOP. Do NOT call ScheduleWakeup.
+
+**Stage skills verification:** if `implement` is configured, run `verify --agent-id <agentId> --require <implement skills>` on the implementation subagent and act on the result per the Stage Skills Protocol. After success, `tm comment bd-N "XPowers-Profile: <profile>; verified skills: <loaded>"`.
 
 → **CONTINUATION:** Phase 2 complete. Subagent dispatched and verified. Proceed to Phase 3.
 
@@ -273,6 +265,8 @@ STATUS=$(tm show bd-N --json | jq -r .status)
 ### Quick review
 
 Only run if the task from Phase 2 was successfully closed (`STATUS == "closed"`). If the task was deferred or left in-progress, skip directly to criteria check below.
+
+Run `resolve task-review` (Stage Skills Protocol). If configured, dispatch every listed reviewer **in parallel** instead of the single default reviewer, each with its own agent, `<stage_skills>` and `<review_focus>`, then `verify` each one. Any Critical/High finding or non-approval verdict from any reviewer triggers the Remediation Path below. If not configured:
 
 Dispatch `autonomous-reviewer` agent for the completed task.
 
@@ -347,7 +341,7 @@ tm update bd-WATCHDOG --title "LOOP-WATCHDOG: bd-EPIC cycles=${NEW_CYCLES} phase
 
 ## Phase 4: End-of-Epic Review (single turn)
 
-Dispatch specialized reviews **in parallel** via Agent tool:
+Run `resolve final-review` (Stage Skills Protocol). If configured, dispatch the listed reviewers **in parallel** instead of the default three below, each with its own agent, `<stage_skills>` and `<review_focus>`, and `verify` each one. If not configured, dispatch the default specialized reviews **in parallel** via Agent tool:
 
 1. **review-quality** -- bugs, race conditions, error handling
 2. **security-scanner** -- OWASP, secrets, CVEs
@@ -385,7 +379,7 @@ If Phase 4 cap reached (phase4 >= 2): STOP and alert user. Do NOT call ScheduleW
 
 Then END TURN.
 
-**Final gate** -- dispatch in parallel:
+**Final gate** -- run `resolve final-gate` (Stage Skills Protocol). If configured, dispatch the listed reviewers in parallel instead of the default pair below, `verify` each one, and close the epic only if every one of them returns an approval verdict. If not configured, dispatch in parallel:
 - **autonomous-reviewer**: return APPROVED or GAPS_FOUND. If a `--reviewer-model=opus|sonnet` flag was parsed for this run, include `model: <value>` in the `autonomous-reviewer` Agent dispatch; otherwise omit the parameter so the agent's pinned frontmatter `inherit` (parent session model) applies.
 - **review-implementation**: return PASS or ISSUES_FOUND
 
@@ -470,7 +464,7 @@ END TURN. Do NOT proceed to branch completion with failing verification.
 
 In guarded environments, direct .git/hooks/pre-commit execution may be blocked by safety guardrails.
 
-**Watchdog cleanup:** Close the watchdog task BEFORE branch completion so the cleanup is included in the final commit/push:
+**Watchdog cleanup:** Close the watchdog task BEFORE branch completion so the cleanup is included in the final commit:
 ```bash
 tm close bd-WATCHDOG --reason="Epic bd-EPIC completed successfully"
 git add .beads/ && git commit -m "chore: close watchdog for completed epic bd-EPIC"
@@ -480,7 +474,7 @@ git add .beads/ && git commit -m "chore: close watchdog for completed epic bd-EP
 Use Skill tool: xpowers:finishing-a-development-branch
 ```
 
-**Autonomous override:** When the skill presents integration options, auto-select **option 2 (Push and create Pull Request)** without waiting for user input. This is autonomous execution -- do not present options or wait.
+**Autonomous override:** run `resolve finish` (Stage Skills Protocol) and auto-select the option matching `mode` without waiting for user input: `keep-branch` -> option 3, `merge-local` -> option 1. Default is `keep-branch`. Option 2 (push + PR) is forbidden by the No Push Rule. This is autonomous execution -- do not present options or wait.
 
 AFTER FINISHING BRANCH RETURNS: Present summary (tasks completed, commits made, review results, any flagged items). Do NOT call ScheduleWakeup. The loop ends naturally here.
 

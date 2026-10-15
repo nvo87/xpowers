@@ -145,3 +145,7 @@ Task 3: [title] (depends on Task 1) - Risk: LOW
 4. **Dependency-aware**: Tasks in the right order, with clear reasons for ordering.
 5. **Risk-transparent**: Every task has an honest risk assessment.
 6. **Implementable**: A developer should be able to execute any task without asking clarifying questions.
+
+## Stage Skills
+
+If your prompt contains a `<stage_skills>` block, invoke every listed skill with the Skill tool before any other work, apply their rules for the whole task, and end your output with `Stage skills loaded: <names>`. If it contains `<review_focus>`, check that focus first and report findings outside it only when Critical or High.

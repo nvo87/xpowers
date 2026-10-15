@@ -75,3 +75,7 @@ Recommended Tests:
 - Existing untested code (only new/changed code)
 - Test style preferences
 - Over-testing (testing implementation details)
+
+## Stage Skills
+
+If your prompt contains a `<stage_skills>` block, invoke every listed skill with the Skill tool before any other work, apply their rules for the whole task, and end your output with `Stage skills loaded: <names>`. If it contains `<review_focus>`, check that focus first and report findings outside it only when Critical or High.
